@@ -21,6 +21,7 @@
       align-items: center;
     }
 
+    /* Floating hearts */
     .heart {
       position: absolute;
       color: rgba(255, 105, 180, 0.6);
@@ -51,6 +52,17 @@
       z-index: 2;
     }
 
+    @keyframes popIn {
+      0% {
+        transform: scale(0.7);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
     h1 {
       color: #ff4d6d;
       margin-bottom: 10px;
@@ -60,6 +72,11 @@
     @keyframes bounce {
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-8px); }
+    }
+
+    p {
+      color: #555;
+      margin-bottom: 30px;
     }
 
     .buttons {
@@ -103,8 +120,26 @@
 
     .thank-you {
       display: none;
+      animation: fadeIn 1.2s ease forwards;
     }
 
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .thank-you img {
+      width: 220px;
+      margin: 20px 0;
+    }
+
+    /* Heart confetti */
     .confetti {
       position: absolute;
       font-size: 18px;
@@ -112,14 +147,54 @@
     }
 
     @keyframes confettiFall {
-      from { transform: translateY(-20px); opacity: 1; }
-      to { transform: translateY(100vh); opacity: 0; }
+      from {
+        transform: translateY(-20px);
+        opacity: 1;
+      }
+      to {
+        transform: translateY(100vh);
+        opacity: 0;
+      }
     }
+    
+  @keyframes shake {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(-4px, 4px) rotate(-8deg); }
+    50% { transform: translate(4px, -4px) rotate(8deg); }
+    75% { transform: translate(-4px, -4px) rotate(-8deg); }
+    100% { transform: translate(0, 0) rotate(0deg); }
+  }
+
+  .shake {
+    animation: shake 0.25s infinite;
+  }
+
+  .fade {
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+
+
   </style>
 </head>
 
 <body>
 
+  <!-- Floating hearts generator -->
+  <script>
+    setInterval(() => {
+      const heart = document.createElement("div");
+      heart.classList.add("heart");
+      heart.innerText = "💗";
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.fontSize = Math.random() * 20 + 10 + "px";
+      document.body.appendChild(heart);
+
+      setTimeout(() => heart.remove(), 6000);
+    }, 300);
+  </script>
+
+  <!-- Valentine Page -->
   <div class="container" id="valentinePage">
     <h1>Twinkle 💖</h1>
     <p>Will you be my Valentine?</p>
@@ -130,67 +205,75 @@
     </div>
   </div>
 
+  <!-- Thank You Page -->
   <div class="container thank-you" id="thankYouPage">
     <h1>Yayyyy 🥹❤️</h1>
     <p>Happy 1 Year Anniversary, my love 💕</p>
-    <img src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif" width="220" />
-    <p>I love you so much 💖</p>
+
+    <img src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif" alt="Cute gif">
+
+    <p>Thank you for being my Valentine </p>
+      <p> I love you so much💖</p>
   </div>
 
   <script>
-    // Floating hearts
-    setInterval(() => {
-      const heart = document.createElement("div");
-      heart.className = "heart";
-      heart.innerText = "💗";
-      heart.style.left = Math.random() * 100 + "vw";
-      heart.style.fontSize = Math.random() * 20 + 10 + "px";
-      document.body.appendChild(heart);
-      setTimeout(() => heart.remove(), 6000);
-    }, 300);
+  const noBtn = document.getElementById("noBtn");
+  const yesBtn = document.getElementById("yesBtn");
+  const valentinePage = document.getElementById("valentinePage");
+  const thankYouPage = document.getElementById("thankYouPage");
 
-    const noBtn = document.getElementById("noBtn");
-    const yesBtn = document.getElementById("yesBtn");
-    const valentinePage = document.getElementById("valentinePage");
-    const thankYouPage = document.getElementById("thankYouPage");
+  const nopeSound = new Audio("engineer_no01.mp3");
 
-    const nopeSound = new Audio("engineer_no01.mp3");
 
-    // Unlock audio
-    document.addEventListener("click", () => {
-      nopeSound.play().then(() => {
-        nopeSound.pause();
-        nopeSound.currentTime = 0;
-      }).catch(() => {});
-    }, { once: true });
+  function moveNoButton() {
+    const padding = 30;
 
-    function moveNoButton() {
-      const x = Math.random() * (window.innerWidth - 100);
-      const y = Math.random() * (window.innerHeight - 50);
+    const maxX = window.innerWidth - noBtn.offsetWidth - padding;
+    const maxY = window.innerHeight - noBtn.offsetHeight - padding;
+
+    const randomX = Math.random() * maxX;
+    const randomY = Math.random() * maxY;
+    const rotation = Math.random() * 30 - 15;
+
+    noBtn.classList.add("fade");
+
+    setTimeout(() => {
       noBtn.style.position = "fixed";
-      noBtn.style.left = x + "px";
-      noBtn.style.top = y + "px";
-      nopeSound.currentTime = 0;
-      nopeSound.play().catch(() => {});
+      noBtn.style.left = randomX + "px";
+      noBtn.style.top = randomY + "px";
+      noBtn.style.transform = `rotate(${rotation}deg)`;
+      noBtn.classList.remove("fade");
+      noBtn.classList.add("shake");
+    }, 120);
+
+    nopeSound.currentTime = 0;
+    nopeSound.play().catch(() => {});
+  }
+
+  // 👉 ONLY move when cursor is actually on the button
+  noBtn.addEventListener("mouseenter", moveNoButton);
+  noBtn.addEventListener("mousedown", moveNoButton); // just in case 😈
+  noBtn.addEventListener("touchstart", moveNoButton); // mobile
+
+  yesBtn.addEventListener("click", () => {
+    valentinePage.style.display = "none";
+    thankYouPage.style.display = "block";
+
+    // Heart confetti 💖
+    for (let i = 0; i < 45; i++) {
+      const confetti = document.createElement("div");
+      confetti.classList.add("confetti");
+      confetti.innerText = "💖";
+      confetti.style.left = Math.random() * 100 + "vw";
+      confetti.style.fontSize = Math.random() * 20 + 12 + "px";
+      document.body.appendChild(confetti);
+
+      setTimeout(() => confetti.remove(), 3000);
     }
+  });
+</script>
 
-    noBtn.addEventListener("mouseenter", moveNoButton);
-    noBtn.addEventListener("touchstart", moveNoButton);
-
-    yesBtn.addEventListener("click", () => {
-      valentinePage.style.display = "none";
-      thankYouPage.style.display = "block";
-
-      for (let i = 0; i < 30; i++) {
-        const c = document.createElement("div");
-        c.className = "confetti";
-        c.innerText = "💖";
-        c.style.left = Math.random() * 100 + "vw";
-        document.body.appendChild(c);
-        setTimeout(() => c.remove(), 3000);
-      }
-    });
-  </script>
 
 </body>
 </html>
+
