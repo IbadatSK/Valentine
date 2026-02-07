@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>For Twinkle ❤️</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(135deg, #ffb6c1, #ffe4e1, #ffc0cb);
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .heart {
+      position: absolute;
+      color: rgba(255, 105, 180, 0.6);
+      font-size: 20px;
+      animation: floatUp 6s linear infinite;
+    }
+
+    @keyframes floatUp {
+      from {
+        transform: translateY(100vh) scale(0.5);
+        opacity: 1;
+      }
+      to {
+        transform: translateY(-10vh) scale(1.2);
+        opacity: 0;
+      }
+    }
+
+    .container {
+      background: white;
+      padding: 40px;
+      border-radius: 25px;
+      text-align: center;
+      width: 90%;
+      max-width: 420px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+      animation: popIn 1s ease;
+      z-index: 2;
+    }
+
+    h1 {
+      color: #ff4d6d;
+      margin-bottom: 10px;
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .buttons {
+      position: relative;
+      height: 130px;
+    }
+
+    button {
+      padding: 14px 30px;
+      font-size: 16px;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    button:hover {
+      transform: scale(1.1);
+    }
+
+    #yesBtn {
+      background: #ff4d6d;
+      color: white;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(255,77,109,0.7); }
+      70% { box-shadow: 0 0 0 15px rgba(255,77,109,0); }
+      100% { box-shadow: 0 0 0 0 rgba(255,77,109,0); }
+    }
+
+    #noBtn {
+      background: #adb5bd;
+      color: white;
+      position: absolute;
+      left: 50%;
+      top: 60%;
+      transform: translate(-50%, -50%);
+    }
+
+    .thank-you {
+      display: none;
+    }
+
+    .confetti {
+      position: absolute;
+      font-size: 18px;
+      animation: confettiFall 3s linear forwards;
+    }
+
+    @keyframes confettiFall {
+      from { transform: translateY(-20px); opacity: 1; }
+      to { transform: translateY(100vh); opacity: 0; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container" id="valentinePage">
+    <h1>Twinkle 💖</h1>
+    <p>Will you be my Valentine?</p>
+
+    <div class="buttons">
+      <button id="yesBtn">Yes 💘</button>
+      <button id="noBtn">No 🙃</button>
+    </div>
+  </div>
+
+  <div class="container thank-you" id="thankYouPage">
+    <h1>Yayyyy 🥹❤️</h1>
+    <p>Happy 1 Year Anniversary, my love 💕</p>
+    <img src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif" width="220" />
+    <p>I love you so much 💖</p>
+  </div>
+
+  <script>
+    // Floating hearts
+    setInterval(() => {
+      const heart = document.createElement("div");
+      heart.className = "heart";
+      heart.innerText = "💗";
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.fontSize = Math.random() * 20 + 10 + "px";
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 6000);
+    }, 300);
+
+    const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
+    const valentinePage = document.getElementById("valentinePage");
+    const thankYouPage = document.getElementById("thankYouPage");
+
+    const nopeSound = new Audio("engineer_no01.mp3");
+
+    // Unlock audio
+    document.addEventListener("click", () => {
+      nopeSound.play().then(() => {
+        nopeSound.pause();
+        nopeSound.currentTime = 0;
+      }).catch(() => {});
+    }, { once: true });
+
+    function moveNoButton() {
+      const x = Math.random() * (window.innerWidth - 100);
+      const y = Math.random() * (window.innerHeight - 50);
+      noBtn.style.position = "fixed";
+      noBtn.style.left = x + "px";
+      noBtn.style.top = y + "px";
+      nopeSound.currentTime = 0;
+      nopeSound.play().catch(() => {});
+    }
+
+    noBtn.addEventListener("mouseenter", moveNoButton);
+    noBtn.addEventListener("touchstart", moveNoButton);
+
+    yesBtn.addEventListener("click", () => {
+      valentinePage.style.display = "none";
+      thankYouPage.style.display = "block";
+
+      for (let i = 0; i < 30; i++) {
+        const c = document.createElement("div");
+        c.className = "confetti";
+        c.innerText = "💖";
+        c.style.left = Math.random() * 100 + "vw";
+        document.body.appendChild(c);
+        setTimeout(() => c.remove(), 3000);
+      }
+    });
+  </script>
+
+</body>
+</html>
